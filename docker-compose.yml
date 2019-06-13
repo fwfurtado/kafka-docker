@@ -1,0 +1,29 @@
+version: '3.7'
+
+services: 
+  zookeeper:
+    image: zookeeper
+    ports:
+      - "2181:2181"
+    healthcheck:
+      test: ["CMD", "echo ruok | nc localhost 2181"]
+      interval: 5s
+      timeout: 5s
+      retries: 3      
+  kafka:
+    image: kafka:2.2.0
+    environment: 
+      - ZOOKEEPER_HOST=zookeeper
+      - ZOOKEEPER_PORT=2181
+      - ADVERTISE_HOST=fwfurtado-host.local
+    ports: 
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+# mysql:
+#   image: mysql
+#   environment: 
+#     - MYSQL_USER=kafka
+#     - MYSQL_PASSWORD=kafka
+#     - MYSQL_DATABASE=app
+#     - MYSQL_ROOT_PASSWORD=kªƒkª
