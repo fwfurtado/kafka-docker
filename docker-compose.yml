@@ -1,25 +1,57 @@
 version: '3.7'
 
 services: 
-  zookeeper:
+  zookeeper1:
     image: zookeeper
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2888:3888    
+      ZOO_STANDALONE_ENABLED: 'false'
     ports:
       - "2181:2181"
     healthcheck:
       test: ["CMD", "echo ruok | nc localhost 2181"]
       interval: 5s
       timeout: 5s
-      retries: 3      
+      retries: 3     
+  zookeeper2:
+    image: zookeeper
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=0.0.0.0:2888:3888 server.3=zookeeper3:2888:3888    
+      ZOO_STANDALONE_ENABLED: 'false'     
+    healthcheck:
+      test: ["CMD", "echo ruok | nc localhost 2181"]
+      interval: 5s
+      timeout: 5s
+      retries: 3  
+    depends_on: 
+      - zookeeper1
+  zookeeper3:
+    image: zookeeper
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=zookeeper2:2888:3888 server.3=0.0.0.0:2888:3888    
+      ZOO_STANDALONE_ENABLED: 'false'
+    healthcheck:
+      test: ["CMD", "echo ruok | nc localhost 2181"]
+      interval: 5s
+      timeout: 5s
+      retries: 3     
+    depends_on: 
+      - zookeeper2
   kafka:
     image: kafka:2.2.0
     environment: 
-      - ZOOKEEPER_HOST=zookeeper
-      - ZOOKEEPER_PORT=2181
+      - ZOOKEEPER_SERVERS=zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka      
       - ADVERTISE_HOST=fwfurtado-host.local
+      - BROKER_ID=0
     ports: 
       - "9092:9092"
     depends_on:
-      - zookeeper
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
 # mysql:
 #   image: mysql
 #   environment: 
