@@ -23,7 +23,6 @@ VOLUME [ "/var/lib/kafka" ]
 COPY assets/docker-entrypoint.sh /usr/local/bin/
 
 ENV 	PATH="/opt/kafka/bin:${PATH}" \
-		BROKER_ID=0 \ 	
-		ZOOKEEPER_PORT=2181
+		BROKER_ID=0 		
 
 ENTRYPOINT ["docker-entrypoint.sh"]
