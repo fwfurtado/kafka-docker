@@ -40,18 +40,48 @@ services:
       retries: 3     
     depends_on: 
       - zookeeper2
-  kafka:
+  kafka1:
     image: kafka:2.2.0
     environment: 
       - ZOOKEEPER_SERVERS=zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka      
-      - ADVERTISE_HOST=fwfurtado-host.local
-      - BROKER_ID=0
+      # - ADVERTISE_HOST=kafka-1
+      - BROKER_ID=1
     ports: 
       - "9092:9092"
     depends_on:
       - zookeeper1
       - zookeeper2
       - zookeeper3
+  kafka2:
+    image: kafka:2.2.0
+    environment: 
+      - ZOOKEEPER_SERVERS=zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka      
+      # - ADVERTISE_HOST=kafka-2
+      - BROKER_ID=2
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3      
+  kafka3:
+    image: kafka:2.2.0
+    environment: 
+      - ZOOKEEPER_SERVERS=zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka      
+      # - ADVERTISE_HOST=kafka-3
+      - BROKER_ID=3
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3    
+  kafka4:
+    image: kafka:2.2.0
+    environment: 
+      - ZOOKEEPER_SERVERS=zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka      
+      # - ADVERTISE_HOST=kafka-4
+      - BROKER_ID=4
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3        
 # mysql:
 #   image: mysql
 #   environment: 
